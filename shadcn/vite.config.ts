@@ -20,6 +20,14 @@ export default defineConfig({
   },
   // The shared /data folder lives outside this app's root, so the dev server
   // needs permission to read one level up.
-  server: { port: PORT, strictPort: true, fs: { allow: ['..'] } },
+  // host/allowedHosts only matter when this app is run standalone on a remote
+  // machine; under `npm run dev` it is reached through the shell's proxy.
+  server: {
+    port: PORT,
+    strictPort: true,
+    host: true,
+    allowedHosts: ['localhost', '127.0.0.1', '.app.github.dev', '.github.dev', '.gitpod.io'],
+    fs: { allow: ['..'] },
+  },
   preview: { port: PORT, strictPort: true },
 });

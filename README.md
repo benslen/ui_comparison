@@ -6,15 +6,20 @@ from the **same fake data**. The library is the only variable.
 **→ One website switches between all six: <http://localhost:5000>**
 
 ```
-shell/     → http://localhost:5000   the switcher — start here
-mui/       → http://localhost:5001
-mantine/   → http://localhost:5002
-chakra/    → http://localhost:5003
-antd/      → http://localhost:5004
-shadcn/    → http://localhost:5005
-daisyui/   → http://localhost:5006
+shell/     → http://localhost:5000            the switcher — start here
+mui/       → http://localhost:5000/apps/mui/
+mantine/   → http://localhost:5000/apps/mantine/
+chakra/    → http://localhost:5000/apps/chakra/
+antd/      → http://localhost:5000/apps/antd/
+shadcn/    → http://localhost:5000/apps/shadcn/
+daisyui/   → http://localhost:5000/apps/daisyui/
 data/      → shared fixtures + sort/format helpers (no UI code)
 ```
+
+**Port 5000 is the only port you need.** Each app still runs its own Vite
+server on 5001–5006, but the shell proxies them, so the browser only ever
+talks to one origin. That's what makes this work over a single forwarded port
+on Codespaces, devcontainers, and SSH tunnels.
 
 ## Quick start
 
@@ -52,6 +57,11 @@ else would put one library's buttons and type on screen at all times and bias
 every comparison you make. The chrome is dark and neutral so it reads as
 browser furniture and sits fairly against both light and dark app content.
 
+**Everything is one origin.** The shell's dev server proxies `/apps/<name>/`
+to each app's own Vite server, and the built site just has the files there. So
+the frame URL is identical in dev and production, and the whole workspace
+travels through a single port — no cross-origin, no per-port authentication.
+
 **Each app is framed, not merged.** Combining six libraries into one bundle
 would be a mess of exactly the kind that invalidates a comparison: antd's
 `reset.css`, Tailwind's preflight twice over (shadcn and DaisyUI, with
@@ -59,6 +69,41 @@ conflicting token systems), Mantine's global styles, MUI's `CssBaseline`, and
 Chakra's `globalCss` would all fight for the same selectors. Frames give each
 app the isolated document it was built for, and what you see is what that
 library actually produces.
+
+### GitHub Codespaces, devcontainers, and SSH
+
+Open the repo in a Codespace and run:
+
+```bash
+npm install && npm run install:all
+npm run dev
+```
+
+Then open the forwarded **port 5000**. `.devcontainer/devcontainer.json`
+forwards it automatically and keeps 5001–5006 silent, since you never address
+them directly.
+
+If port 5000 hangs on "connecting", it is almost always one of these:
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Port never becomes available | Server bound to `127.0.0.1`, so the forwarder can't see it | Already fixed — every server sets `server.host: true` |
+| "Blocked request. This host is not allowed" | Vite rejects the generated `*.app.github.dev` hostname | Already fixed — see `allowedHosts` in the Vite configs |
+| Shell loads, frames spin forever | A frame pointing at `localhost:5001` resolves to **your laptop**, not the container | Already fixed — all frames are same-origin `/apps/<name>/` |
+| Page loads but edits don't hot-reload | HMR socket tries the dev port over `ws://`; forwarding terminates TLS on 443 | Already fixed — `hmr.clientPort: 443` when `$CODESPACES` is set |
+| Still stuck | Forwarded port set to Private and the browser isn't authenticated | Set port 5000's visibility to Public in the **Ports** panel |
+
+The frame issue is worth calling out: an earlier version of this workspace
+framed each app cross-origin at `http://localhost:5001`. That works fine on a
+laptop and fails completely on any remote machine, because `localhost` in a
+frame means the *viewer's* machine. The proxy exists to make that impossible.
+
+If you would rather not run seven dev servers at all, build once and serve the
+static output — one process, one port, no proxy:
+
+```bash
+npm run build:site && npm run preview:site   # port 4173
+```
 
 ### Deploying it as one site
 
@@ -70,8 +115,10 @@ npm run preview:site # → http://localhost:4173
 This rebuilds each app with `APP_BASE=/apps/<name>/` and assembles everything
 into a single static directory — the shell at the root, the six apps under
 `apps/`. No dev servers, no server-side anything; upload `dist-site/` anywhere
-that serves files. In dev the shell frames the six dev servers cross-origin
-instead, which is what keeps every app independently runnable.
+that serves files.
+
+Each app still runs standalone for focused work — `cd mui && npm run dev`
+serves it by itself on port 5001 at the root path, unproxied.
 
 ## The reference screen
 

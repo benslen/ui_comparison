@@ -111,10 +111,14 @@ export const smallest = libraries.reduce((a, b) => (a.sizeKb <= b.sizeKb ? a : b
 export const largest = libraries.reduce((a, b) => (a.sizeKb >= b.sizeKb ? a : b));
 
 /**
- * In dev each app runs on its own port and is framed cross-origin, which keeps
- * every app independently runnable. The built site serves them from /apps/<id>/
- * on a single origin, so one static bundle is the whole comparison.
+ * Same path in dev and in the built site: everything is served from this one
+ * origin under /apps/<id>/. In dev the shell's Vite server proxies that to the
+ * app's own port; in the built site the files are simply there.
+ *
+ * Keeping it same-origin is what makes the workspace work through a single
+ * forwarded port on Codespaces, devcontainers, and SSH tunnels — a frame
+ * pointed at `localhost:5001` would resolve to the viewer's own machine.
  */
 export function appUrl(entry: LibraryEntry): string {
-  return import.meta.env.DEV ? `http://localhost:${entry.port}/` : `${import.meta.env.BASE_URL}apps/${entry.dir}/`;
+  return `${import.meta.env.BASE_URL}apps/${entry.dir}/`;
 }

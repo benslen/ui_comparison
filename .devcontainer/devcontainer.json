@@ -1,0 +1,34 @@
+{
+  "name": "UI Library Comparison",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+
+  // Installs root tooling plus the shell and all six apps (seven npm installs,
+  // so the first container build takes a few minutes).
+  "postCreateCommand": "npm install && npm run install:all",
+
+  // Only port 5000 needs forwarding: the shell proxies every app through it at
+  // /apps/<name>/. The app ports are internal and stay quiet.
+  "forwardPorts": [5000],
+  "portsAttributes": {
+    "5000": {
+      "label": "UI Library Comparison",
+      "onAutoForward": "openPreview"
+    },
+    "4173": {
+      "label": "Built site preview",
+      "onAutoForward": "notify"
+    },
+    "5001": { "label": "MUI (internal)", "onAutoForward": "silent" },
+    "5002": { "label": "Mantine (internal)", "onAutoForward": "silent" },
+    "5003": { "label": "Chakra (internal)", "onAutoForward": "silent" },
+    "5004": { "label": "Ant Design (internal)", "onAutoForward": "silent" },
+    "5005": { "label": "shadcn (internal)", "onAutoForward": "silent" },
+    "5006": { "label": "DaisyUI (internal)", "onAutoForward": "silent" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  }
+}

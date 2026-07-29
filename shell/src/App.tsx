@@ -162,8 +162,9 @@ export default function App() {
             <p>Loading {active.name}…</p>
             {import.meta.env.DEV && (
               <p className="hint">
-                Nothing here? The {active.name} dev server should be on port {active.port}. Run{' '}
-                <code>npm run dev</code> at the workspace root to boot all six.
+                Nothing here? {active.name} is proxied from port {active.port}. Start everything
+                with <code>npm run dev</code> at the workspace root — running{' '}
+                <code>shell</code> on its own has nothing to proxy to.
               </p>
             )}
           </div>
