@@ -42,6 +42,8 @@ export function CustomerForm() {
             onChange={(event) => setName(event.currentTarget.value)}
             error={nameError}
           />
+          {/* `searchable` turns the trigger into a text input that filters the
+              options as you type — Mantine handles the filtering itself. */}
           <Select
             label={formCopy.planLabel}
             placeholder={formCopy.planPlaceholder}
@@ -49,6 +51,9 @@ export function CustomerForm() {
             value={plan}
             onChange={setPlan}
             error={planError}
+            searchable
+            clearable
+            nothingFoundMessage="No matching plans"
           />
           <DatePickerInput
             label={formCopy.dateLabel}
