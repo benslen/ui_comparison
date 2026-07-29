@@ -1,0 +1,7 @@
+/* Every app in the workspace uses this same system font stack — no webfont
+   requests, so typography is identical and never a variable in the comparison. */
+html,
+body,
+#root {
+  height: 100%;
+}

@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+/* daisyUI v5 installs as a Tailwind v4 CSS plugin — no JS config file, no
+   tailwind.config.js. Themes are named and selected via the data-theme
+   attribute on <html>. */
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
