@@ -4,7 +4,12 @@ import react from '@vitejs/plugin-react';
 
 const PORT = 5001;
 
+// When the workspace is built as one combined site, each app is served from
+// /apps/<name>/ instead of the domain root. Standalone dev/build is unaffected.
+const base = process.env.APP_BASE ?? '/';
+
 export default defineConfig({
+  base,
   plugins: [react()],
   resolve: {
     alias: {

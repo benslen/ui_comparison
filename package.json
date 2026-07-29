@@ -5,13 +5,15 @@
   "type": "module",
   "description": "Six React UI libraries rendering the same reference screen, side by side",
   "scripts": {
-    "dev": "concurrently -k -n mui,mantine,chakra,antd,shadcn,daisy -c blue,cyan,magenta,red,white,yellow \"npm --prefix ./mui run dev\" \"npm --prefix ./mantine run dev\" \"npm --prefix ./chakra run dev\" \"npm --prefix ./antd run dev\" \"npm --prefix ./shadcn run dev\" \"npm --prefix ./daisyui run dev\"",
+    "dev": "concurrently -k -n shell,mui,mantine,chakra,antd,shadcn,daisy -c green,blue,cyan,magenta,red,white,yellow \"npm --prefix ./shell run dev\" \"npm --prefix ./mui run dev\" \"npm --prefix ./mantine run dev\" \"npm --prefix ./chakra run dev\" \"npm --prefix ./antd run dev\" \"npm --prefix ./shadcn run dev\" \"npm --prefix ./daisyui run dev\"",
     "start": "npm run dev",
-    "install:all": "concurrently -n mui,mantine,chakra,antd,shadcn,daisy \"npm --prefix ./mui install\" \"npm --prefix ./mantine install\" \"npm --prefix ./chakra install\" \"npm --prefix ./antd install\" \"npm --prefix ./shadcn install\" \"npm --prefix ./daisyui install\"",
-    "build:all": "concurrently -n mui,mantine,chakra,antd,shadcn,daisy \"npm --prefix ./mui run build\" \"npm --prefix ./mantine run build\" \"npm --prefix ./chakra run build\" \"npm --prefix ./antd run build\" \"npm --prefix ./shadcn run build\" \"npm --prefix ./daisyui run build\"",
-    "typecheck:all": "concurrently -n mui,mantine,chakra,antd,shadcn,daisy \"npm --prefix ./mui run typecheck\" \"npm --prefix ./mantine run typecheck\" \"npm --prefix ./chakra run typecheck\" \"npm --prefix ./antd run typecheck\" \"npm --prefix ./shadcn run typecheck\" \"npm --prefix ./daisyui run typecheck\"",
+    "install:all": "concurrently -n shell,mui,mantine,chakra,antd,shadcn,daisy \"npm --prefix ./shell install\" \"npm --prefix ./mui install\" \"npm --prefix ./mantine install\" \"npm --prefix ./chakra install\" \"npm --prefix ./antd install\" \"npm --prefix ./shadcn install\" \"npm --prefix ./daisyui install\"",
+    "build:all": "concurrently -n shell,mui,mantine,chakra,antd,shadcn,daisy \"npm --prefix ./shell run build\" \"npm --prefix ./mui run build\" \"npm --prefix ./mantine run build\" \"npm --prefix ./chakra run build\" \"npm --prefix ./antd run build\" \"npm --prefix ./shadcn run build\" \"npm --prefix ./daisyui run build\"",
+    "typecheck:all": "concurrently -n shell,mui,mantine,chakra,antd,shadcn,daisy \"npm --prefix ./shell run typecheck\" \"npm --prefix ./mui run typecheck\" \"npm --prefix ./mantine run typecheck\" \"npm --prefix ./chakra run typecheck\" \"npm --prefix ./antd run typecheck\" \"npm --prefix ./shadcn run typecheck\" \"npm --prefix ./daisyui run typecheck\"",
+    "build:site": "node scripts/build-site.mjs",
+    "preview:site": "npx --yes http-server dist-site -p 4173 -c-1 --silent",
     "sizes": "node scripts/measure-bundles.mjs",
-    "clean": "rm -rf */node_modules */dist node_modules"
+    "clean": "rm -rf */node_modules */dist node_modules dist-site"
   },
   "devDependencies": {
     "concurrently": "^10.0.4"

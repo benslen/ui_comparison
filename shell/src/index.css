@@ -1,0 +1,374 @@
+/*
+ * The shell is hand-written CSS on purpose: it must not use any of the six
+ * libraries, or it would put one of them on screen at all times and bias the
+ * comparison. The chrome is deliberately dark and neutral — it reads as
+ * browser furniture, so it sits fairly against both light and dark app content.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --chrome: #14161c;
+  --chrome-2: #1b1e26;
+  --line: #2a2e39;
+  --text: #e9ecf2;
+  --dim: #949cb0;
+  --dim-2: #6d7488;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--chrome);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ---------- chrome ---------- */
+
+.chrome {
+  flex: none;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--line);
+}
+
+.chrome-top {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4f8cff, #c07cf5 55%, #f7c948);
+}
+
+.brand-name {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.brand-sub {
+  font-size: 11.5px;
+  color: var(--dim);
+  line-height: 1.3;
+}
+
+.switcher {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  background: var(--chrome-2);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 4px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dim);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease,
+    border-color 0.14s ease;
+}
+
+.tab:hover {
+  background: #232733;
+  color: var(--text);
+}
+
+.tab.is-active {
+  background: #262b38;
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  color: var(--text);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tab-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.45;
+  flex: none;
+  transition: opacity 0.14s ease;
+}
+
+.tab.is-active .tab-dot {
+  opacity: 1;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+.tab-key {
+  font: inherit;
+  font-size: 10.5px;
+  color: var(--dim);
+  background: #12141a;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 4px;
+  line-height: 15px;
+}
+
+.tab.is-active .tab-key {
+  color: var(--text);
+}
+
+/* ---------- metadata strip ---------- */
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 9px 16px;
+  background: var(--chrome-2);
+  border-top: 1px solid var(--line);
+}
+
+.meta-facts {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.meta-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.meta-version {
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.meta-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--line);
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.meta-value {
+  color: var(--text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.meta-label {
+  color: var(--dim);
+  font-size: 11.5px;
+}
+
+.meta-bar {
+  display: inline-block;
+  width: 54px;
+  height: 4px;
+  border-radius: 2px;
+  background: #2f3441;
+  overflow: hidden;
+  align-self: center;
+}
+
+.meta-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+
+.meta-flag {
+  font-size: 10.5px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6ee7a8;
+  background: #12321f;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.meta-flag.is-warn {
+  color: #ffab8f;
+  background: #3a1d16;
+}
+
+.meta-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.take {
+  margin: 0;
+  font-size: 12px;
+  color: var(--dim);
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 62ch;
+}
+
+.open {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 5px 10px;
+  background: #12141a;
+  transition: border-color 0.14s ease;
+}
+
+.open:hover {
+  border-color: var(--accent);
+}
+
+/* ---------- stage ---------- */
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: var(--chrome);
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+  /* Hidden frames stay mounted so each app keeps its state between switches. */
+  visibility: hidden;
+  opacity: 0;
+}
+
+.frame.is-active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+  background: var(--chrome);
+  color: var(--dim);
+  font-size: 13px;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--line);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading p {
+  margin: 0;
+}
+
+.hint {
+  max-width: 46ch;
+  font-size: 12px;
+  color: var(--dim-2);
+  line-height: 1.5;
+}
+
+.hint code {
+  background: var(--chrome-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .take {
+    display: none;
+  }
+}

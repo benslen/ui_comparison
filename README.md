@@ -3,7 +3,10 @@
 Six standalone apps, one per library, all rendering the **same reference screen**
 from the **same fake data**. The library is the only variable.
 
+**→ One website switches between all six: <http://localhost:5000>**
+
 ```
+shell/     → http://localhost:5000   the switcher — start here
 mui/       → http://localhost:5001
 mantine/   → http://localhost:5002
 chakra/    → http://localhost:5003
@@ -17,16 +20,58 @@ data/      → shared fixtures + sort/format helpers (no UI code)
 
 ```bash
 npm install          # root tooling (concurrently)
-npm run install:all  # installs all six apps in parallel
-npm run dev          # boots all six at once, ports 5001–5006
+npm run install:all  # installs the shell + all six apps in parallel
+npm run dev          # boots everything; open http://localhost:5000
 ```
 
 Other scripts: `npm run build:all`, `npm run typecheck:all`, `npm run sizes`
-(bundle report), `npm run clean`.
+(bundle report), `npm run build:site` (one deployable static site),
+`npm run preview:site`, `npm run clean`.
 
 Each app is genuinely standalone — `cd mui && npm install && npm run dev` works
 on its own. There is no monorepo tooling, no shared `node_modules`, and no
 hoisting, so nothing one library does can affect another's build.
+
+## The switcher
+
+`shell/` is a small app on port 5000 that frames whichever implementation you
+pick, so you can flip between six libraries rendering identical content without
+losing your place.
+
+- **Six tabs**, or press <kbd>1</kbd>–<kbd>6</kbd>, or <kbd>←</kbd>/<kbd>→</kbd>
+- **Deep-linkable** — the URL carries `?lib=mantine`, and back/forward work
+- **Frames stay mounted**, so each app keeps its state (sort column, current
+  page, open tab, dark mode) when you switch away and back
+- A **metadata strip** shows the measured bundle size with a bar scaled against
+  the heaviest library, component count, styling approach, and license
+
+Two deliberate choices worth knowing about:
+
+**The shell uses none of the six libraries.** It is hand-written CSS. Anything
+else would put one library's buttons and type on screen at all times and bias
+every comparison you make. The chrome is dark and neutral so it reads as
+browser furniture and sits fairly against both light and dark app content.
+
+**Each app is framed, not merged.** Combining six libraries into one bundle
+would be a mess of exactly the kind that invalidates a comparison: antd's
+`reset.css`, Tailwind's preflight twice over (shadcn and DaisyUI, with
+conflicting token systems), Mantine's global styles, MUI's `CssBaseline`, and
+Chakra's `globalCss` would all fight for the same selectors. Frames give each
+app the isolated document it was built for, and what you see is what that
+library actually produces.
+
+### Deploying it as one site
+
+```bash
+npm run build:site   # → dist-site/
+npm run preview:site # → http://localhost:4173
+```
+
+This rebuilds each app with `APP_BASE=/apps/<name>/` and assembles everything
+into a single static directory — the shell at the root, the six apps under
+`apps/`. No dev servers, no server-side anything; upload `dist-site/` anywhere
+that serves files. In dev the shell frames the six dev servers cross-origin
+instead, which is what keeps every app independently runnable.
 
 ## The reference screen
 
@@ -254,3 +299,9 @@ dark mode — **with zero console errors**. All six pass.
 
 The three antd deprecation warnings above were found by that browser check, not
 by the compiler, which is exactly why the check exists.
+
+The switcher was checked the same way, twice: against the dev servers, and
+again against the built `dist-site/` served as plain static files with no dev
+servers running at all. Every library frames and renders, the URL stays in
+sync, keyboard shortcuts and deep links work, and the console is clean in both
+modes.
